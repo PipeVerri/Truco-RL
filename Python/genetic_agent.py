@@ -2,14 +2,16 @@ import numpy as np
 from truco_utils import *
 
 class GeneticAgent:
-    def __init__(self, depth=3, width=128):
+    def __init__(self, depth=3, width=128, seed=None):
         # Init weights randomly. 76 inputs, 13 outputs
-        weights = [np.random.uniform(-1, 1, (width, 76 + 1))] # +1 for bias
+        if seed is not None:
+            np.random.seed(seed)
+        weights = [np.random.uniform(-1, 1, (width, 79 + 1))] # +1 for bias
         if depth > 1:
             for _ in range(depth - 1):
-                weights.append(np.random.uniform(-1, 1, (width + 1, width)))
+                weights.append(np.random.uniform(-1, 1, (width, width + 1))) # +1 for bias
 
-        weights.append(np.random.uniform(-1, 1, (width + 1, 15))) # Output layer
+        weights.append(np.random.uniform(-1, 1, (15, width + 1))) # Output layer
 
         # Param initialization
         self.weights = weights
@@ -36,7 +38,7 @@ class GeneticAgent:
         self.cards = sorted(selected, key=lambda card: card["power"])
         self.id = agent_id
 
-        start_state = [{id: -1, "power": 0, "palo": 0, "envido": 0}] * 3
+        start_state = [{"id": -1, "power": 0, "palo": 0, "envido": 0}] * 3
         self.played_cards = start_state
         self.opponent_played_cards = start_state
 
@@ -56,13 +58,12 @@ class GeneticAgent:
 
     def turn(self, mano):
         output = np.append(self._build_input(mano), 1) # Bias
-        for weight in range(len(self.weights) - 1):
-            z = weight @ output
+        for i in range(len(self.weights) - 1):
+            z = self.weights[i] @ output
             a = np.maximum(0, z) # ReLU
             output = np.append(a, 1) # Bias
         # Output layer transform
         output = self.weights[len(self.weights) - 1] @ output
-        output = self._sigmoid(output)
         output_masked = output * self._output_mask()
         return np.argmax(output_masked)
 
@@ -79,7 +80,7 @@ class GeneticAgent:
             self.truco_state == 2 and self.can_cantar_truco and not self.expect_envido_response,
             # Que cantos del envido puedo hacer
             self.envido_state == 0 and self.can_cantar_envido,
-            self.envido_state <= 1 and self.can_cantar_envido,
+            self.envido_state == 1 and self.can_cantar_envido, # Solo doble envido si se canto el envido justo antes
             self.envido_state <= 2 and self.can_cantar_envido,
             self.envido_state <= 3 and self.can_cantar_envido,
             # Si se acepta o rechaza el truco, el envido toma prioridad

@@ -3,6 +3,7 @@ from truco_utils import *
 from genetic_agent import GeneticAgent
 from collections import deque
 import copy
+import json
 
 CARDS = [
     {"id": 0, "power": 14, "palo": 0, "envido": 1},  # 1 of espadas (macho)
@@ -64,20 +65,24 @@ ENVIDO_STATE_POINTS = [
 ]
 
 class TrucoMatch:
-    def __init__(self, agent1 : GeneticAgent, agent2 : GeneticAgent):
+    def __init__(self, agent1 : GeneticAgent, agent2 : GeneticAgent, points_agent_1, points_agent_2):
         self.agent1 = agent1
         self.agent2 = agent2
+        self.points_agent1 = points_agent_1
+        self.points_agent2 = points_agent_2
 
-    def match(self, agent1, agent2, points_agent1, points_agent2, debug=False):
+    def match(self, debug=False, seed=None):
         # Inicializar
         # Parametros agente
+        if seed is not None:
+            np.random.seed(seed)
         selected = np.random.choice(CARDS, 6, replace=True)
         cards_agent1 = selected[:3]
         cards_agent2 = selected[3:]
-        agents = [agent1, agent2] # 2 templates para cada agente
+        agents = [self.agent1, self.agent2] # 2 templates para cada agente
         # Inicializar los agentes en si
-        agent1.start_round(cards_agent1, True, points_agent1, points_agent2)
-        agent2.start_round(cards_agent2, False, points_agent2, points_agent1)
+        self.agent1.start_round(0, cards_agent1, True, self.points_agent1, self.points_agent2)
+        self.agent2.start_round(1, cards_agent2, False, self.points_agent2, self.points_agent1)
         # Parametros globales
         hand_state = [0, 0, 0]
         truco_state = 0 # 0 para nada, 1 para el truco, ...
@@ -88,7 +93,7 @@ class TrucoMatch:
         falta_envido = False # Que se haga el handling del falta envido al definir si se quiere o no
         mano = 0 # El index de la mano
 
-        def process_action(action, i):
+        def process_action(i, action):
             nonlocal hand_state, truco_state, actions_queue, envido_state, envido_points, previous_envido_points, falta_envido, mano
 
             if action < 3: # Tira alguna de las primeras 3 cartas
@@ -181,7 +186,7 @@ class TrucoMatch:
 
                 # Actualizar los agentes
                 agents[i].can_cantar_envido = False
-                agents[i].can_cantar_envido = True
+                agents[not i].can_cantar_envido = True
                 agents[not i].expect_envido_response = True
 
                 # Agregarlos al queue
@@ -233,16 +238,17 @@ class TrucoMatch:
                 return False
 
             if agents[i].points >= 30 or agents[not i].points >= 30: # Termino la partida
+                agents[not i].points += 1
                 return False
 
             # Actualizar los parametros globales
-            for i in range(2):
-                agents[i].hand_state = hand_state
-                agents[i].opponent_points = agents[not i].points
-                agents[i].truco_state = truco_state
-                agents[i].envido_state = envido_state
-                agents[i].envido_points = envido_points
-                agents[i].reject_envido_points = previous_envido_points
+            for j in range(2):
+                agents[j].hand_state = hand_state
+                agents[j].opponent_points = agents[not i].points
+                agents[j].truco_state = truco_state
+                agents[j].envido_state = envido_state
+                agents[j].envido_points = envido_points
+                agents[j].reject_envido_points = previous_envido_points
 
             return True
 
@@ -251,11 +257,14 @@ class TrucoMatch:
         debug_output = []
         while len(actions_queue) > 0:
             agent = actions_queue.pop()
-            action = agents[agent].predict_best_play(mano)
+            action = agents[agent].turn(mano)
 
             if debug:
+                agent_state = copy.deepcopy(agents[agent].__dict__)
+                del agent_state["weights"]
+
                 debug_output.append({
-                    "agent_index": agent,
+                    "agent_index": int(agent),
                     "action_chosen": action,
                     "mano": mano,
                     "global_state": {
@@ -266,7 +275,7 @@ class TrucoMatch:
                         "previous_envido_points": previous_envido_points,
                         "falta_envido": falta_envido,
                     },
-                    "agent_state": copy.deepcopy(agents[agent].__dict__),
+                    "agent_state": agent_state,
                 })
 
             keep_playing = process_action(agent, action)
@@ -277,3 +286,14 @@ class TrucoMatch:
             return debug_output, agents[0].points, agents[1].points
         else:
             return agents[0].points, agents[1].points
+
+if __name__ == "__main__":
+    s = 43
+    test_agent_1 = GeneticAgent(seed=s)
+    test_agent_2 = GeneticAgent(seed=s)
+    MatchEnvironment = TrucoMatch(test_agent_1, test_agent_2, 0, 0)
+    sample_debug, agent1_points, agent2_points = MatchEnvironment.match(debug=True, seed=s) # TODO, poner en true
+    print(agent1_points, agent2_points)
+    print(sample_debug)
+    with open("sample_debug_match.json", "w", encoding="utf-8") as f:
+        json.dump(sample_debug, f, cls=NumpyEncoder, ensure_ascii=False)

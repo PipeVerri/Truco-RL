@@ -1,3 +1,8 @@
+import json
+
+import numpy as np
+
+
 def build_hand_critical_input(mano, hand_state, i, is_mano):
         won = i + 1
         lost = (not i) + 1
@@ -21,3 +26,17 @@ def build_hand_critical_input(mano, hand_state, i, is_mano):
 
 def calculate_falta_envido_points(points):
     return 15 - points if points < 15 else 30 - points
+
+class NumpyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        # NumPy integer (e.g. np.int64) → Python int
+        if isinstance(obj, np.integer):
+            return int(obj)
+        # NumPy float (e.g. np.float32) → Python float
+        if isinstance(obj, np.floating):
+            return float(obj)
+        # NumPy arrays → lists (recursively)
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        # Let the base class raise the TypeError
+        return super().default(obj)

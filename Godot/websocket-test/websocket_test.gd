@@ -1,4 +1,4 @@
-extends Node2D
+extends Node
 
 var socket := WebSocketPeer.new()  # ← instead of WebSocketClient
 
