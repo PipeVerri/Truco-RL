@@ -3,7 +3,7 @@ import websockets
 import json
 
 # Carga tu lista de diccionarios UNA VEZ a nivel de módulo
-with open("../best_agents.json", "r") as f:
+with open("../best_match.json", "r") as f:
     data = json.load(f)
 
 async def handler(ws):

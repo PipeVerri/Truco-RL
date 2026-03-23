@@ -5,7 +5,7 @@ from Enviroment.truco_environment import TrucoEnvironment
 from Agent.genetic_agent import GeneticAgent
 from Utils.truco_utils import NumpyEncoder
 from concurrent.futures import ProcessPoolExecutor, as_completed
-
+import pickle
 
 def _simulate_agent_fitness(i, opponent_indices, agent_weights_list, AgentClass, MatchEnvClass, k):
     """
@@ -70,7 +70,7 @@ class GeneticEnvironment:
         fitness = self._eval_fitness()
         top_indices = np.argsort(fitness)[::-1][: self.rank]
 
-        # Generate offspring in parallel
+        # Generate offspring
         offspring_weights = []
         for i in top_indices:
             for j in top_indices[: i + 1]:
@@ -121,9 +121,12 @@ class GeneticEnvironment:
         return weights_list
 
 if __name__ == "__main__":
-    env = GeneticEnvironment(GeneticAgent, TrucoEnvironment)
-    best_agent1, best_agent2 = env.train(100)
+    env = GeneticEnvironment(GeneticAgent, TrucoEnvironment, k=2, mutation_rate=0.2, mutation_strength=0.05, initial_size=50, rank=10)
+    best_agent1, best_agent2 = env.train(200)
     truco_env = TrucoEnvironment()
     debug, p1, p2 = truco_env.match(best_agent1, best_agent2, 0, 0, debug=True)
-    with open("../best_agents.json", "w", encoding="utf-8") as f:
+
+    with open("../best_match.json", "w", encoding="utf-8") as f:
         json.dump({"agent1_points": p1, "agent2_points": p2, "debug": debug}, f, cls=NumpyEncoder, ensure_ascii=False)
+    with open("../best_agent_weights.pkl", "wb") as f:
+        pickle.dump(best_agent1.weights, f)

@@ -1,0 +1,194 @@
+[gd_scene format=3 uid="uid://dv1ck2ko7iid7"]
+
+[ext_resource type="Texture2D" uid="uid://xcsau2m5j3tg" path="res://images/cartas/-1.png" id="1_cn2bs"]
+[ext_resource type="Script" uid="uid://dnf35w4wql7r1" path="res://visualizer/next-play.gd" id="2_cn2bs"]
+[ext_resource type="Texture2D" uid="uid://3g6b5440cvds" path="res://icon.svg" id="2_yr3tu"]
+
+[node name="Node" type="Node" unique_id=832727326]
+
+[node name="Viewer" type="Node2D" parent="." unique_id=1127052087]
+scale = Vector2(0.990247, 0.990247)
+
+[node name="mano_1" type="Sprite2D" parent="Viewer" unique_id=1780439496]
+position = Vector2(79.7483, 534.206)
+scale = Vector2(0.490321, 0.490321)
+texture = ExtResource("1_cn2bs")
+
+[node name="mano_2" type="Sprite2D" parent="Viewer" unique_id=1703149473]
+position = Vector2(201.748, 536.206)
+scale = Vector2(0.490321, 0.490321)
+texture = ExtResource("1_cn2bs")
+
+[node name="mano_3" type="Sprite2D" parent="Viewer" unique_id=180330053]
+position = Vector2(323.748, 538.206)
+scale = Vector2(0.490321, 0.490321)
+texture = ExtResource("1_cn2bs")
+
+[node name="pie_1" type="Sprite2D" parent="Viewer" unique_id=750333934]
+position = Vector2(805.105, 542.737)
+scale = Vector2(0.490321, 0.490321)
+texture = ExtResource("1_cn2bs")
+
+[node name="pie_2" type="Sprite2D" parent="Viewer" unique_id=508034366]
+position = Vector2(927.105, 544.737)
+scale = Vector2(0.490321, 0.490321)
+texture = ExtResource("1_cn2bs")
+
+[node name="pie_3" type="Sprite2D" parent="Viewer" unique_id=2073594936]
+position = Vector2(1049.11, 546.737)
+scale = Vector2(0.490321, 0.490321)
+texture = ExtResource("1_cn2bs")
+
+[node name="mano_jugada_1" type="Sprite2D" parent="Viewer" unique_id=1356867096]
+position = Vector2(445.599, 286.235)
+scale = Vector2(0.490321, 0.490321)
+texture = ExtResource("1_cn2bs")
+
+[node name="mano_jugada_2" type="Sprite2D" parent="Viewer" unique_id=1795099130]
+position = Vector2(567.599, 288.235)
+scale = Vector2(0.490321, 0.490321)
+texture = ExtResource("1_cn2bs")
+
+[node name="mano_jugada_3" type="Sprite2D" parent="Viewer" unique_id=1341500889]
+position = Vector2(689.599, 290.235)
+scale = Vector2(0.490321, 0.490321)
+texture = ExtResource("1_cn2bs")
+
+[node name="pie_jugada_1" type="Sprite2D" parent="Viewer" unique_id=238706290]
+position = Vector2(440.55, 104.462)
+scale = Vector2(0.490321, 0.490321)
+texture = ExtResource("1_cn2bs")
+
+[node name="pie_jugada_2" type="Sprite2D" parent="Viewer" unique_id=1068608763]
+position = Vector2(562.55, 106.462)
+scale = Vector2(0.490321, 0.490321)
+texture = ExtResource("1_cn2bs")
+
+[node name="pie_jugada_3" type="Sprite2D" parent="Viewer" unique_id=392331610]
+position = Vector2(684.55, 108.462)
+scale = Vector2(0.490321, 0.490321)
+texture = ExtResource("1_cn2bs")
+
+[node name="mano_activado" type="Sprite2D" parent="Viewer" unique_id=1528988605]
+visible = false
+position = Vector2(66.65, 391.821)
+scale = Vector2(0.490321, 0.490321)
+texture = ExtResource("2_yr3tu")
+
+[node name="pie_activado" type="Sprite2D" parent="Viewer" unique_id=196207956]
+visible = false
+position = Vector2(1064.38, 395.861)
+scale = Vector2(0.490321, 0.490321)
+texture = ExtResource("2_yr3tu")
+
+[node name="Control" type="Control" parent="." unique_id=734847730]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control" unique_id=1407177737]
+layout_mode = 0
+offset_left = 129.0
+offset_top = 342.0
+offset_right = 271.0
+offset_bottom = 371.0
+text = "Mano"
+horizontal_alignment = 1
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="Control" unique_id=238805496]
+layout_mode = 0
+offset_left = 854.0
+offset_top = 349.0
+offset_right = 996.0
+offset_bottom = 378.0
+text = "Pie"
+horizontal_alignment = 1
+
+[node name="RichTextLabel3" type="RichTextLabel" parent="Control" unique_id=781088235]
+layout_mode = 0
+offset_left = 231.0
+offset_top = 276.0
+offset_right = 373.0
+offset_bottom = 305.0
+text = "Mano"
+horizontal_alignment = 2
+
+[node name="RichTextLabel4" type="RichTextLabel" parent="Control" unique_id=1622477033]
+layout_mode = 0
+offset_left = 222.0
+offset_top = 86.0
+offset_right = 364.0
+offset_bottom = 115.0
+text = "Pie"
+horizontal_alignment = 2
+
+[node name="Button" type="Button" parent="Control" unique_id=1379539927]
+layout_mode = 0
+offset_left = 445.0
+offset_top = 443.0
+offset_right = 673.0
+offset_bottom = 495.0
+text = "Siguiente jugada"
+script = ExtResource("2_cn2bs")
+
+[node name="mano_play" type="RichTextLabel" parent="Control" unique_id=1946341746]
+layout_mode = 0
+offset_left = 82.0
+offset_top = 375.0
+offset_right = 314.0
+offset_bottom = 404.0
+horizontal_alignment = 1
+
+[node name="pie_play" type="RichTextLabel" parent="Control" unique_id=158457718]
+layout_mode = 0
+offset_left = 813.0
+offset_top = 383.0
+offset_right = 1041.0
+offset_bottom = 412.0
+horizontal_alignment = 1
+
+[node name="global_params" type="RichTextLabel" parent="Control" unique_id=934519192]
+layout_mode = 0
+offset_left = 395.0
+offset_top = 509.0
+offset_right = 729.0
+offset_bottom = 617.0
+horizontal_alignment = 1
+
+[node name="mano_puntos" type="RichTextLabel" parent="Control" unique_id=2095984312]
+layout_mode = 0
+offset_left = 162.0
+offset_top = 411.0
+offset_right = 238.0
+offset_bottom = 440.0
+horizontal_alignment = 1
+
+[node name="pie_puntos" type="RichTextLabel" parent="Control" unique_id=1629031098]
+layout_mode = 0
+offset_left = 882.0
+offset_top = 421.0
+offset_right = 954.0
+offset_bottom = 450.0
+horizontal_alignment = 1
+
+[node name="mano1_status" type="ColorRect" parent="Control" unique_id=566110978]
+layout_mode = 0
+offset_left = 417.0
+offset_top = 382.0
+offset_right = 457.0
+offset_bottom = 422.0
+
+[node name="mano2_status" type="ColorRect" parent="Control" unique_id=1679056737]
+layout_mode = 0
+offset_left = 537.0
+offset_top = 382.0
+offset_right = 577.0
+offset_bottom = 422.0
+
+[node name="mano3_status" type="ColorRect" parent="Control" unique_id=1736011907]
+layout_mode = 0
+offset_left = 659.0
+offset_top = 384.0
+offset_right = 699.0
+offset_bottom = 424.0
